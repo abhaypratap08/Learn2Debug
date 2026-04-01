@@ -2,95 +2,114 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-**AI-powered Java Code Debugger for Learners**
+Learn2Debug is a **Java + Spring Boot** backend where users paste code, get it judged, see detected errors, and receive documentation links to learn how to fix problems.
 
-Learn2Debug is an open-source tool designed to help Java learners and developers **improve their coding skills**. Unlike traditional debuggers, it **does not modify your code**. Instead, it analyzes your Java programs, points out potential bugs, suggests improvements, and provides **educational tips** to help you understand the reasoning behind each suggestion.
+## What this codebase provides
 
-It combines **static code analysis** with **AI-generated explanations**, making learning and debugging interactive and insightful.
+- REST API for code analysis (`POST /api/analyze`)
+- Health endpoint (`GET /api/health`)
+- Structured findings with:
+  - severity (`ERROR`, `WARNING`, `TIP`)
+  - line number
+  - explanation
+  - fix suggestion
+  - related documentation links
+- Basic Spring Boot integration tests with MockMvc
 
----
+## Tech stack
 
-## Features (v1)
+- Java 17
+- Spring Boot 3 (Web + Validation)
+- Maven
+- JUnit 5 / Spring Boot Test
 
-* Analyze Java code for **potential runtime errors** (e.g., division by zero, null pointer risks)
-* Detect **unused variables** and **dead code**
-* Provide **AI-generated hints** and **learning tips** for each detected issue
-* **Non-destructive**: Original code is never modified
-* Command-Line Interface (CLI) with **color-coded output**
-
-  * **Red:** Critical errors
-  * **Yellow:** Warnings
-  * **Blue/Green:** Learning tips
-* Configurable verbosity: Beginner / Intermediate / Advanced
-
----
-
-## Tech Stack
-
-* **Language:** Java
-* **Static Analysis:** JavaParser, Checkstyle, SpotBugs
-* **AI Module:** OpenAI API (or local LLM)
-* **Build System:** Maven or Gradle
-
----
-
-## Usage
-
-### CLI Example
-
-```bash
-# Analyze a Java file
-java -jar Learn2Debug.jar MyProgram.java --level beginner
-```
-
-### Example Output
-
-```
-[Error] Division by zero at line 12
-[Tip] Avoid dividing by zero. Check the denominator before performing division.
-
-[Warning] Unused variable 'temp' at line 5
-[Tip] Remove unused variables to keep code clean and maintainable.
-```
-
----
-
-## Getting Started
-
-1. **Clone the repository:**
+## Run locally
 
 ```bash
 git clone https://github.com/yourusername/Learn2Debug.git
 cd Learn2Debug
+mvn spring-boot:run
 ```
 
-2. **Build the project** with Maven or Gradle.
-3. **Set up your OpenAI API key** (for AI explanations).
-4. **Run the CLI** to analyze Java files.
+The API will start at `http://localhost:8080`.
 
----
+## API usage
 
-## Contribution
+### Health
 
-Contributions are welcome! You can help by:
+```bash
+curl http://localhost:8080/api/health
+```
 
-* Adding **new static analysis rules**
-* Improving **AI explanations and learning tips**
-* Enhancing **CLI experience**
+### Analyze code
 
-Please submit a **pull request** with a clear description of your changes.
+```bash
+curl -X POST http://localhost:8080/api/analyze \
+  -H "Content-Type: application/json" \
+  -d '{
+    "level": "beginner",
+    "code": "int x = 10 / 0;\nString temp = \"demo\";"
+  }'
+```
 
----
+### Example response (truncated)
 
-## License
+```json
+{
+  "summary": "Analysis complete: 2 finding(s) for level=beginner",
+  "score": 75,
+  "findings": [
+    {
+      "severity": "ERROR",
+      "line": 1,
+      "title": "Possible division by zero",
+      "relatedDocumentation": [
+        "https://docs.oracle.com/javase/8/docs/api/java/lang/ArithmeticException.html"
+      ]
+    }
+  ]
+}
+```
 
-This project is licensed under the **MIT License** – see the [LICENSE](LICENSE) file for details.
+## How to test this
 
----
+### 1) Run automated tests
 
-## Roadmap (Future Versions)
+```bash
+mvn test
+```
 
-* IDE plugin support (VSCode / IntelliJ)
-* Web-based interface with interactive hints
-* Advanced AI-assisted refactoring suggestions
-* Gamification / learning score system
+This runs `AnalysisControllerTest` and checks:
+- `GET /api/health` returns `200` and `{ "status": "ok" }`
+- `POST /api/analyze` returns findings for problematic code
+- Validation returns `400` when `code` is blank
+
+### 2) Manual API smoke test (while app is running)
+
+Run the app in one terminal:
+
+```bash
+mvn spring-boot:run
+```
+
+Then run these in another terminal:
+
+```bash
+# health check
+curl http://localhost:8080/api/health
+
+# analyze request
+curl -X POST http://localhost:8080/api/analyze \
+  -H "Content-Type: application/json" \
+  -d '{"level":"beginner","code":"int value = 4 / 0;"}'
+
+# validation failure (blank code)
+curl -X POST http://localhost:8080/api/analyze \
+  -H "Content-Type: application/json" \
+  -d '{"level":"beginner","code":""}'
+```
+
+Expected results:
+- Health returns `{"status":"ok"}`
+- Analyze returns JSON with `findings`
+- Blank `code` returns `400` with `errors.code = "code is required"`
