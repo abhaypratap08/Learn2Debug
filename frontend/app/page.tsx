@@ -21,6 +21,8 @@ const examples = [
   { name: "Assignment in If", code: "int x = 5;\nif (x = 10) {}" },
 ];
 
+const API_URL = "https://learn2debug-api.onrender.com";
+
 export default function Home() {
   const [code, setCode] = useState(`class Solution {
     public static long sumScores(String s) {
@@ -29,13 +31,13 @@ export default function Home() {
 }`);
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [editorWidth, setEditorWidth] = useState(68); // percentage for normal 100% resolution
+  const [editorWidth, setEditorWidth] = useState(68);
   const isDragging = useRef(false);
 
   const analyzeCode = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:8080/api/analyze', {
+      const res = await fetch(`${API_URL}/api/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ level: 'beginner', code }),
@@ -43,7 +45,7 @@ export default function Home() {
       const data = await res.json();
       setResult(data);
     } catch (err) {
-      alert('Backend not reachable. Make sure Spring Boot is running on port 8080');
+      alert('Could not connect to backend. Please try again.');
     }
     setLoading(false);
   };
@@ -58,7 +60,6 @@ export default function Home() {
     return <CheckCircle className="w-5 h-5 text-emerald-400" />;
   };
 
-  // Draggable panel
   const handleMouseDown = () => { isDragging.current = true; };
   const handleMouseMove = (e: MouseEvent) => {
     if (!isDragging.current) return;
@@ -77,11 +78,10 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#111111] text-[#F5EDE3] flex flex-col font-sans">
-      {/* Header */}
+    <div className="min-h-screen bg-[#111111] text-[#F5EDE3] flex flex-col">
       <header className="bg-[#2C211B] border-b border-[#A67B5B]/30 px-8 py-5 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#A67B5B] rounded-2xl flex items-center justify-center shadow-inner">
+          <div className="w-10 h-10 bg-[#A67B5B] rounded-2xl flex items-center justify-center">
             <Zap className="w-6 h-6 text-[#111111]" />
           </div>
           <h1 className="text-3xl font-semibold tracking-tight">Learn2Debug</h1>
@@ -89,7 +89,6 @@ export default function Home() {
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-        {/* Editor Panel */}
         <div style={{ width: `${editorWidth}%` }} className="flex flex-col border-r border-[#A67B5B]/20">
           <div className="px-8 py-4 bg-[#2C211B] border-b border-[#A67B5B]/30 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -111,7 +110,7 @@ export default function Home() {
 
             <button
               onClick={() => { setCode(''); setResult(null); }}
-              className="flex items-center gap-2 text-[#F5EDE3]/70 hover:text-[#F5EDE3] transition-colors"
+              className="flex items-center gap-2 text-[#F5EDE3]/70 hover:text-[#F5EDE3]"
             >
               <RotateCcw className="w-4 h-4" />
               Clear
@@ -140,22 +139,17 @@ export default function Home() {
             <button
               onClick={analyzeCode}
               disabled={loading}
-              className="w-full py-5 text-lg font-semibold bg-[#A67B5B] hover:bg-[#C19A6B] text-[#111111] rounded-3xl transition-all flex items-center justify-center gap-3"
+              className="w-full py-5 text-lg font-semibold bg-[#A67B5B] hover:bg-[#C19A6B] text-[#111111] rounded-3xl transition-all"
             >
               {loading ? 'Analyzing...' : 'Analyze Code'}
             </button>
           </div>
         </div>
 
-        {/* Draggable Divider */}
-        <div
-          onMouseDown={handleMouseDown}
-          className="w-1 bg-[#A67B5B]/30 hover:bg-[#A67B5B] cursor-col-resize transition-colors flex items-center justify-center group"
-        >
+        <div onMouseDown={handleMouseDown} className="w-1 bg-[#A67B5B]/30 hover:bg-[#A67B5B] cursor-col-resize transition-colors flex items-center justify-center group">
           <div className="w-1 h-12 bg-[#A67B5B]/40 group-hover:bg-[#A67B5B] rounded-full"></div>
         </div>
 
-        {/* Analysis Panel */}
         <div className="flex-1 min-w-[400px] bg-[#2C211B] flex flex-col">
           <div className="px-8 py-6 border-b border-[#A67B5B]/30">
             <h2 className="text-2xl font-semibold flex items-center gap-3 text-[#F5EDE3]">
@@ -166,20 +160,18 @@ export default function Home() {
 
           {result ? (
             <div className="flex-1 overflow-auto p-8 space-y-8">
-              {/* Score */}
               <div className="text-center">
                 <div className="text-sm text-[#F5EDE3]/70 mb-1">Your Score</div>
                 <div className="text-7xl font-light text-[#F5EDE3] tracking-tighter">{result.score}</div>
               </div>
 
-              {/* Findings */}
               <div className="space-y-6">
                 {result.findings.map((finding: Finding, i: number) => (
                   <div key={i} className="bg-[#111111] border border-[#A67B5B]/30 rounded-3xl p-6">
                     <div className="flex gap-4">
                       {getSeverityIcon(finding.severity)}
                       <div className="flex-1">
-                        <h3 className="font-medium text-lg text-[#F5EDE3]">{finding.title}</h3>
+                        <h3 className="font-medium text-lg">{finding.title}</h3>
                         <p className="text-[#F5EDE3]/80 mt-3 text-[15px] leading-relaxed">{finding.explanation}</p>
                         
                         <div className="mt-5 bg-[#2C211B] rounded-2xl p-5 text-[#F5EDE3] text-sm">
@@ -188,7 +180,7 @@ export default function Home() {
 
                         <button
                           onClick={() => copyToClipboard(finding.fixSuggestion)}
-                          className="mt-4 flex items-center gap-2 text-sm text-[#F5EDE3]/70 hover:text-[#A67B5B] transition-colors"
+                          className="mt-4 flex items-center gap-2 text-sm text-[#F5EDE3]/70 hover:text-[#A67B5B]"
                         >
                           <Copy className="w-4 h-4" />
                           Copy fix suggestion
@@ -199,12 +191,7 @@ export default function Home() {
                             <p className="text-xs text-[#F5EDE3]/60 mb-3">Learn more from Oracle:</p>
                             <div className="flex flex-wrap gap-2">
                               {finding.relatedDocumentation.map((link, idx) => (
-                                <a
-                                  key={idx}
-                                  href={link}
-                                  target="_blank"
-                                  className="px-5 py-2 bg-[#3C2A20] hover:bg-[#A67B5B] hover:text-[#111111] rounded-2xl transition-colors text-xs"
-                                >
+                                <a key={idx} href={link} target="_blank" className="px-5 py-2 bg-[#3C2A20] hover:bg-[#A67B5B] hover:text-[#111111] rounded-2xl transition-colors text-xs">
                                   📖 Documentation
                                 </a>
                               ))}
@@ -227,7 +214,7 @@ export default function Home() {
                 <Zap className="w-10 h-10 text-[#A67B5B]/60" />
               </div>
               <p className="text-2xl text-[#F5EDE3]">Your analysis will appear here</p>
-              <p className="text-[#F5EDE3]/60 mt-3 max-w-xs">Paste your Java code on the left and click Analyze</p>
+              <p className="text-[#F5EDE3]/60 mt-3">Paste Java code on the left and click Analyze</p>
             </div>
           )}
         </div>
