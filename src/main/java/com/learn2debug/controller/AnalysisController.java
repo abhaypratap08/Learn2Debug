@@ -16,7 +16,17 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", methods = {org.springframework.web.bind.annotation.RequestMethod.GET, org.springframework.web.bind.annotation.RequestMethod.POST})
+@CrossOrigin(
+    origins = {
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "https://learn2-debug.vercel.app",
+        "https://learn2debug.vercel.app"
+    },
+    allowedHeaders = "*",
+    methods = {org.springframework.web.bind.annotation.RequestMethod.GET, org.springframework.web.bind.annotation.RequestMethod.POST},
+    allowCredentials = true
+)
 public class AnalysisController {
 
     private final CodeAnalysisService codeAnalysisService;
