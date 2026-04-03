@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Map;
 
@@ -24,8 +25,8 @@ import java.util.Map;
         "https://learn2debug.vercel.app"
     },
     allowedHeaders = "*",
-    methods = {org.springframework.web.bind.annotation.RequestMethod.GET, org.springframework.web.bind.annotation.RequestMethod.POST},
-    allowCredentials = true
+    methods = {RequestMethod.GET, RequestMethod.POST},
+    allowCredentials = "true"
 )
 public class AnalysisController {
 
