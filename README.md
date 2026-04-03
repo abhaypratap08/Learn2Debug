@@ -1,115 +1,37 @@
 # Learn2Debug
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+**A simple tool I built because I was tired of staring at Java errors and having no idea what was wrong.**
 
-Learn2Debug is a **Java + Spring Boot** backend where users paste code, get it judged, see detected errors, and receive documentation links to learn how to fix problems.
+Live → **[https://learn2-debug.vercel.app](https://learn2-debug.vercel.app)**
 
-## What this codebase provides
+---
 
-- REST API for code analysis (`POST /api/analyze`)
-- Health endpoint (`GET /api/health`)
-- Structured findings with:
-  - severity (`ERROR`, `WARNING`, `TIP`)
-  - line number
-  - explanation
-  - fix suggestion
-  - related documentation links
-- Basic Spring Boot integration tests with MockMvc
+### Why I made it
 
-## Tech stack
+When I was learning Java, I kept running into the same problem:  
+My code would break, but I didn’t know **where** or **why**.  
+The error messages were confusing, and there was no friendly tool that could explain things simply.
 
-- Java 17
-- Spring Boot 3 (Web + Validation)
-- Maven
-- JUnit 5 / Spring Boot Test
+So I created **Learn2Debug** out of curiosity — a place where you can paste your Java code and get clear, human explanations with fix suggestions.
 
-## Run locally
+---
 
-```bash
-git clone https://github.com/yourusername/Learn2Debug.git
-cd Learn2Debug
-mvn spring-boot:run
-```
+### What it does
 
-The API will start at `http://localhost:8080`.
+- Analyzes your Java code (full programs or LeetCode-style snippets)
+- Shows you a score + what’s wrong
+- Gives practical fix suggestions
+- Links to proper Oracle documentation so you can actually learn
 
-## API usage
+It’s made for beginners and students who just want to **understand** instead of guessing.
 
-### Health
+---
 
-```bash
-curl http://localhost:8080/api/health
-```
+### Try it now
 
-### Analyze code
+**[Open Learn2Debug → https://learn2-debug.vercel.app](https://learn2-debug.vercel.app)**
 
-```bash
-curl -X POST http://localhost:8080/api/analyze \
-  -H "Content-Type: application/json" \
-  -d '{
-    "level": "beginner",
-    "code": "int x = 10 / 0;\nString temp = \"demo\";"
-  }'
-```
+No login. No signup. Just paste and learn.
 
-### Example response (truncated)
-
-```json
-{
-  "summary": "Analysis complete: 2 finding(s) for level=beginner",
-  "score": 75,
-  "findings": [
-    {
-      "severity": "ERROR",
-      "line": 1,
-      "title": "Possible division by zero",
-      "relatedDocumentation": [
-        "https://docs.oracle.com/javase/8/docs/api/java/lang/ArithmeticException.html"
-      ]
-    }
-  ]
-}
-```
-
-## How to test this
-
-### 1) Run automated tests
-
-```bash
-mvn test
-```
-
-This runs `AnalysisControllerTest` and checks:
-- `GET /api/health` returns `200` and `{ "status": "ok" }`
-- `POST /api/analyze` returns findings for problematic code
-- Validation returns `400` when `code` is blank
-
-### 2) Manual API smoke test (while app is running)
-
-Run the app in one terminal:
-
-```bash
-mvn spring-boot:run
-```
-
-Then run these in another terminal:
-
-```bash
-# health check
-curl http://localhost:8080/api/health
-
-# analyze request
-curl -X POST http://localhost:8080/api/analyze \
-  -H "Content-Type: application/json" \
-  -d '{"level":"beginner","code":"int value = 4 / 0;"}'
-
-# validation failure (blank code)
-curl -X POST http://localhost:8080/api/analyze \
-  -H "Content-Type: application/json" \
-  -d '{"level":"beginner","code":""}'
-```
-
-Expected results:
-- Health returns `{"status":"ok"}`
-- Analyze returns JSON with `findings`
-- Blank `code` returns `400` with `errors.code = "code is required"`
+---
+Completely free and open source.
