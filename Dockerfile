@@ -1,20 +1,11 @@
 # Build stage
-FROM eclipse-temurin:21-jdk AS build
+FROM maven:3.9.9-eclipse-temurin-21 AS build
 WORKDIR /app
-
-# Copy Maven wrapper files and make executable
-COPY mvnw .
-COPY .mvn .mvn
-RUN chmod +x mvnw
-
-# Copy pom and source
 COPY pom.xml .
 COPY src ./src
+RUN mvn clean package -DskipTests
 
-# Build the app
-RUN ./mvnw clean package -DskipTests
-
-# Runtime stage (lighter image)
+# Runtime stage
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
