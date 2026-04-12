@@ -18,9 +18,12 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(
-    origins = {
+    originPatterns = {
         "http://localhost:3000",
         "http://localhost:5173",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:5173",
+        "https://*.vercel.app",
         "https://learn2-debug.vercel.app",
         "https://learn2debug.vercel.app"
     },

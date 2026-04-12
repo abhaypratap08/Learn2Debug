@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "NODE_OPTIONS='--max-old-space-size=1536' next dev --webpack --disable-source-maps -H 127.0.0.1 -p 3000",
+    "dev:turbo": "next dev --turbopack -H 127.0.0.1 -p 3000",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"

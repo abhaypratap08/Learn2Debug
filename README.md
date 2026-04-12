@@ -27,6 +27,12 @@ It’s made for beginners and students who just want to **understand** instead o
 
 ---
 
+### Runtime note
+
+The backend should run on **JDK 21**, not a JRE. Learn2Debug uses `javac` at runtime to surface real compiler errors like missing symbols, type mismatches, and syntax diagnostics.
+
+---
+
 ### Try it now
 
 **[Open Learn2Debug → https://learn2-debug.vercel.app](https://learn2-debug.vercel.app)**

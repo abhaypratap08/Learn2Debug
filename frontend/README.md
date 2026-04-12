@@ -6,12 +6,18 @@ First, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+
+In this repo, `npm run dev` is the safer local option:
+- it uses webpack instead of Turbopack
+- it disables source maps
+- it caps the Node heap to reduce machine lockups on weaker systems
+- it binds only to `127.0.0.1`
+
+If you explicitly want the heavier Turbopack path, use:
+
+```bash
+npm run dev:turbo
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
