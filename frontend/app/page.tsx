@@ -20,6 +20,11 @@ interface Finding {
   explanation: string;
   fixSuggestion: string;
   relatedDocumentation: string[];
+  aiInsight?: {
+    summary: string;
+    likelyCause: string;
+    confidence: string;
+  } | null;
 }
 
 interface AnalysisResponse {
@@ -369,6 +374,21 @@ export default function Home() {
                               </div>
 
                               <p className="mt-3 text-sm leading-6 text-white/85">{finding.explanation}</p>
+
+                              {finding.aiInsight ? (
+                                <div className="mt-4 rounded-[1.4rem] border border-white/10 bg-black/15 px-4 py-3">
+                                  <div className="flex flex-wrap items-center gap-2">
+                                    <div className="text-xs uppercase tracking-[0.2em] text-white/55">AI explanation</div>
+                                    <span className="rounded-full border border-white/10 px-2 py-1 text-[11px] uppercase tracking-[0.18em] text-white/70">
+                                      {finding.aiInsight.confidence} confidence
+                                    </span>
+                                  </div>
+                                  <p className="mt-2 text-sm leading-6 text-white/90">{finding.aiInsight.summary}</p>
+                                  <p className="mt-2 text-sm leading-6 text-white/70">
+                                    Likely cause: {finding.aiInsight.likelyCause}
+                                  </p>
+                                </div>
+                              ) : null}
 
                               <div className="mt-4 rounded-[1.4rem] bg-black/20 px-4 py-3">
                                 <div className="text-xs uppercase tracking-[0.2em] text-white/55">Suggested fix</div>

@@ -33,6 +33,29 @@ The backend should run on **JDK 21**, not a JRE. Learn2Debug uses `javac` at run
 
 ---
 
+### Optional AI explanations
+
+Learn2Debug can optionally enrich compiler findings with Spring AI. The compiler and rule-based analyzer still stay the source of truth, and AI only adds a better explanation or likely logic hint.
+
+To enable it locally:
+
+```bash
+export LEARN2DEBUG_AI_ENABLED=true
+export SPRING_AI_MODEL_CHAT=openai
+export OPENAI_API_KEY=your_key_here
+export OPENAI_MODEL=gpt-4o-mini
+```
+
+Then run:
+
+```bash
+mvn spring-boot:run
+```
+
+If those variables are not set, the app falls back to deterministic analysis only.
+
+---
+
 ### Try it now
 
 **[Open Learn2Debug → https://learn2-debug.vercel.app](https://learn2-debug.vercel.app)**

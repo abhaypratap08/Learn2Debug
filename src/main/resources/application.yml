@@ -1,0 +1,22 @@
+learn2debug:
+  ai:
+    enabled: ${LEARN2DEBUG_AI_ENABLED:false}
+    inspect-no-issue-cases: ${LEARN2DEBUG_AI_INSPECT_NO_ISSUE_CASES:true}
+    max-logic-hints: ${LEARN2DEBUG_AI_MAX_LOGIC_HINTS:2}
+
+spring:
+  ai:
+    model:
+      chat: ${SPRING_AI_MODEL_CHAT:none}
+      embedding: ${SPRING_AI_MODEL_EMBEDDING:none}
+      image: ${SPRING_AI_MODEL_IMAGE:none}
+      moderation: ${SPRING_AI_MODEL_MODERATION:none}
+      audio:
+        speech: ${SPRING_AI_MODEL_AUDIO_SPEECH:none}
+        transcription: ${SPRING_AI_MODEL_AUDIO_TRANSCRIPTION:none}
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+      chat:
+        options:
+          model: ${OPENAI_MODEL:gpt-4o-mini}
+          temperature: ${OPENAI_TEMPERATURE:0.2}

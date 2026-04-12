@@ -2,6 +2,7 @@ package com.learn2debug.controller;
 
 import com.learn2debug.model.AnalysisRequest;
 import com.learn2debug.model.AnalysisResponse;
+import com.learn2debug.service.AnalysisEnrichmentService;
 import com.learn2debug.service.CodeAnalysisService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -40,9 +41,12 @@ import java.util.Map;
 public class AnalysisController {
 
     private final CodeAnalysisService codeAnalysisService;
+    private final AnalysisEnrichmentService analysisEnrichmentService;
 
-    public AnalysisController(CodeAnalysisService codeAnalysisService) {
+    public AnalysisController(CodeAnalysisService codeAnalysisService,
+                              AnalysisEnrichmentService analysisEnrichmentService) {
         this.codeAnalysisService = codeAnalysisService;
+        this.analysisEnrichmentService = analysisEnrichmentService;
     }
 
     @GetMapping("/health")
@@ -53,6 +57,7 @@ public class AnalysisController {
     @PostMapping("/analyze")
     public ResponseEntity<AnalysisResponse> analyze(@Valid @RequestBody AnalysisRequest request) {
         AnalysisResponse response = codeAnalysisService.analyze(request.code(), request.level());
+        response = analysisEnrichmentService.enrich(request.code(), response);
         return ResponseEntity.ok(response);
     }
 }

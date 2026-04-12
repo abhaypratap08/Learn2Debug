@@ -8,6 +8,15 @@ public record Finding(
         String title,
         String explanation,
         String fixSuggestion,
-        List<String> relatedDocumentation
+        List<String> relatedDocumentation,
+        AiInsight aiInsight
 ) {
+    public Finding(Severity severity,
+                   int line,
+                   String title,
+                   String explanation,
+                   String fixSuggestion,
+                   List<String> relatedDocumentation) {
+        this(severity, line, title, explanation, fixSuggestion, relatedDocumentation, null);
+    }
 }

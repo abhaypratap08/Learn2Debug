@@ -22,6 +22,17 @@ npm run dev:turbo
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+If you also want AI explanations in the analyzer tab, start the backend with:
+
+```bash
+export LEARN2DEBUG_AI_ENABLED=true
+export SPRING_AI_MODEL_CHAT=openai
+export OPENAI_API_KEY=your_key_here
+export OPENAI_MODEL=gpt-4o-mini
+cd /home/abhay/Learn2Debug
+mvn spring-boot:run
+```
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
