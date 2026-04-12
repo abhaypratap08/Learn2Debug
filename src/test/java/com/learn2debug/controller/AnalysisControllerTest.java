@@ -476,4 +476,13 @@ class AnalysisControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(header().string("Access-Control-Allow-Origin", "http://127.0.0.1:3000"));
     }
+
+    @Test
+    void preflightAllowsLanFrontendOrigin() throws Exception {
+        mockMvc.perform(options("/api/analyze")
+                        .header("Origin", "http://192.168.1.25:3000")
+                        .header("Access-Control-Request-Method", "POST"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Access-Control-Allow-Origin", "http://192.168.1.25:3000"));
+    }
 }

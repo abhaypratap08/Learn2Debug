@@ -23,6 +23,12 @@ import java.util.Map;
         "http://localhost:5173",
         "http://127.0.0.1:3000",
         "http://127.0.0.1:5173",
+        "http://[::1]:3000",
+        "http://[::1]:5173",
+        "http://10.*:*",
+        "http://192.168.*:*",
+        "http://172.*:*",
+        "http://*.local:*",
         "https://*.vercel.app",
         "https://learn2-debug.vercel.app",
         "https://learn2debug.vercel.app"

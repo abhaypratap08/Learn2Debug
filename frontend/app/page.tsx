@@ -43,6 +43,22 @@ const defaultAnalysisLevel: AnalysisLevel = 'beginner';
 
 const defaultApiUrl = 'https://learn2debug-api.onrender.com';
 
+function isLocalDevelopmentHost(hostname: string) {
+  return (
+    hostname === 'localhost' ||
+    hostname === '::1' ||
+    /^127(?:\.\d{1,3}){3}$/.test(hostname) ||
+    /^10(?:\.\d{1,3}){3}$/.test(hostname) ||
+    /^192\.168(?:\.\d{1,3}){2}$/.test(hostname) ||
+    /^172\.(1[6-9]|2\d|3[01])(?:\.\d{1,3}){2}$/.test(hostname) ||
+    hostname.endsWith('.local')
+  );
+}
+
+function formatHostForUrl(hostname: string) {
+  return hostname.includes(':') ? `[${hostname}]` : hostname;
+}
+
 function resolveApiBaseUrl() {
   const configured = process.env.NEXT_PUBLIC_API_URL?.trim();
 
@@ -52,8 +68,8 @@ function resolveApiBaseUrl() {
 
   if (typeof window !== 'undefined') {
     const { hostname } = window.location;
-    if (hostname === 'localhost' || hostname === '127.0.0.1') {
-      return `http://${hostname}:8080`;
+    if (isLocalDevelopmentHost(hostname)) {
+      return `http://${formatHostForUrl(hostname)}:8080`;
     }
   }
 
